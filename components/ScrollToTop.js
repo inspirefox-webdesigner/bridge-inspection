@@ -37,6 +37,8 @@ export default function ScrollToTop() {
       { y: 0 },
       { y: -6, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }
     );
+    // Fire reset event BEFORE scrolling so Hero can reset synchronously
+    window.dispatchEvent(new CustomEvent("hero:reset"));
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 

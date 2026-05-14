@@ -15,8 +15,9 @@ export default function Hero() {
 
     const video = videoRef.current;
 
-    // Hide content initially
+    // Hide content initially — ensure video is visible from the start
     gsap.set(contentRef.current, { autoAlpha: 0, y: 50 });
+    gsap.set(videoWrapRef.current, { autoAlpha: 1, scale: 1, borderRadius: "0px" });
 
     // ── Hybrid: forward = play/playbackRate (smooth), reverse = rVFC seek ──
     const SCROLL_ZONE = window.innerHeight * 3.5;
@@ -102,12 +103,47 @@ export default function Hero() {
       rafId = requestAnimationFrame(forwardTick);
     };
 
+    const fullReset = () => {
+      // Stop everything and reset to initial state (scroll position = 0)
+      stopReverse();
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      clearTimeout(stopTimer);
+      video.pause();
+      video.currentTime = 0;
+      displayTime = 0;
+      targetTime = 0;
+      targetRate = 0;
+      currentRate = 0;
+      direction = 1;
+      lastScrollY = 0;
+      // Reset GSAP states
+      gsap.set(videoWrapRef.current, { scale: 1, autoAlpha: 1, borderRadius: "0px" });
+      gsap.set(contentRef.current, { autoAlpha: 0, y: 50 });
+      // Restart forward tick
+      rafId = requestAnimationFrame(forwardTick);
+    };
+
     const onScroll = () => {
       if (videoDuration <= 0) return;
 
-      const dy = window.scrollY - lastScrollY;
-      lastScrollY = window.scrollY;
+      const currentScrollY = window.scrollY;
+      const dy = currentScrollY - lastScrollY;
+      lastScrollY = currentScrollY;
       if (dy === 0) return;
+
+      // Detect instant scroll-to-top jump (e.g. from ScrollToTop button)
+      if (currentScrollY === 0 && Math.abs(dy) > window.innerHeight) {
+        fullReset();
+        return;
+      }
+
+      // Sync displayTime with actual video position to avoid jumps after
+      // returning to the hero section from far below
+      const syncedTime = video.currentTime;
+      if (Math.abs(syncedTime - displayTime) > 0.5) {
+        displayTime = syncedTime;
+        targetTime = syncedTime;
+      }
 
       const newDir = dy > 0 ? 1 : -1;
 
@@ -148,6 +184,10 @@ export default function Hero() {
       }
     };
 
+    // Listen for instant scroll-to-top from ScrollToTop button
+    const onHeroReset = () => fullReset();
+    window.addEventListener("hero:reset", onHeroReset);
+
     // Start in forward mode
     rafId = requestAnimationFrame(forwardTick);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -160,6 +200,16 @@ export default function Hero() {
         start: "70% bottom",
         end: "bottom bottom",
         scrub: 1,
+        onLeaveBack: () => {
+          // Re-entering hero from below — reset video to playing state
+          stopReverse();
+          displayTime = video.currentTime;
+          targetRate = 0;
+          currentRate = 0;
+          direction = 1;
+          lastScrollY = window.scrollY;
+          if (!rafId) rafId = requestAnimationFrame(forwardTick);
+        },
       },
     });
 
@@ -186,6 +236,7 @@ export default function Hero() {
       stopReverse();
       clearTimeout(stopTimer);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("hero:reset", onHeroReset);
     };
   }, []);
 
@@ -215,6 +266,7 @@ export default function Hero() {
         <div
           ref={contentRef}
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10 bg-[#f8fafc]"
+          style={{ visibility: "hidden" }}
         >
           {/* Badge */}
           <div className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-xs font-semibold tracking-wider text-[#1e5edc] text-center max-w-xs sm:max-w-none">
