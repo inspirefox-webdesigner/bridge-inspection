@@ -124,7 +124,7 @@ export default function EcosystemSection() {
     <section ref={sectionRef} className="relative w-full h-screen bg-[#F5F7FB] overflow-hidden flex flex-col items-center py-16 font-sans">
       {/* Ambient Video Background */}
       <div className="absolute inset-0 z-0 opacity-[0.04] mix-blend-multiply pointer-events-none">
-        <video src="/b3-video.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover" />
+        <video src="./b3-video.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover" />
       </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col h-full">

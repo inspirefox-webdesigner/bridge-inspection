@@ -175,7 +175,7 @@ export default function AIDetectionSection() {
 
               {/* Video Element */}
               <video
-                src="/b2-video.mp4"
+                src="./b2-video.mp4"
                 autoPlay
                 loop
                 muted

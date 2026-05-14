@@ -293,7 +293,7 @@ export default function Footer() {
               onMouseLeave={handleLogoLeave}
             >
               <Image
-                src="/logo-light.svg"
+                src="./logo-light.svg"
                 alt="StruxAI"
                 width={160}
                 height={46}

@@ -375,7 +375,7 @@ export default function HowItWorksSection() {
         >
           <video
             ref={videoRef}
-            src="/b1-video.mp4"
+            src="./b1-video.mp4"
             className="absolute w-full h-full object-cover"
             style={{
               top: "48px",

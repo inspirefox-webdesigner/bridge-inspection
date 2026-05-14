@@ -199,7 +199,7 @@ export default function Hero() {
         <div ref={videoWrapRef} className="absolute inset-0 origin-center">
           <video
             ref={videoRef}
-            src="/video-bridge2.mp4"
+            src="./video-bridge2.mp4"
             className="w-full h-full object-cover object-center"
             style={{
               transform: "scale(1.08)",

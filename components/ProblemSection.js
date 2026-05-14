@@ -15,7 +15,7 @@ const CARDS = [
     statLabel: "avg. per inspection cycle",
     accent: "#d97706",
     accentBg: "#fffbeb",
-    videoSrc: "/bridge-video3.mp4",
+    videoSrc: "./bridge-video3.mp4",
     showMoney: false,
   },
   {
@@ -28,7 +28,7 @@ const CARDS = [
     statLabel: "inter-inspector variance",
     accent: "#ea580c",
     accentBg: "#fff7ed",
-    videoSrc: "/bridge-video1.mp4",
+    videoSrc: "./bridge-video1.mp4",
     showMoney: false,
   },
   {
@@ -41,7 +41,7 @@ const CARDS = [
     statLabel: "annual federal spend",
     accent: "#dc2626",
     accentBg: "#fef2f2",
-    videoSrc: "/bridge-video2.mp4",
+    videoSrc: "./bridge-video2.mp4",
     showMoney: true,
   },
 ];

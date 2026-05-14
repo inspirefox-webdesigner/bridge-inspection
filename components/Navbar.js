@@ -32,7 +32,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
-            src="/logo-light.svg"
+            src="./logo-light.svg"
             alt="StruxAI"
             width={200}
             height={200}
