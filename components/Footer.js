@@ -297,7 +297,7 @@ export default function Footer() {
                 alt="StruxAI"
                 width={160}
                 height={46}
-                className="h-10 w-auto"
+                className="h-13 w-auto"
               />
             </div>
 
