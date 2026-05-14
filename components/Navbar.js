@@ -25,7 +25,9 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled || menuOpen ? "bg-white/95 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-5"
+        scrolled || menuOpen
+          ? "bg-white/95 backdrop-blur-md shadow-sm py-3"
+          : "bg-black/10 backdrop-blur-sm py-3"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -42,16 +44,16 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-          <Link href="#" className="hover:text-blue-600 transition-colors">Platform</Link>
-          <Link href="#" className="hover:text-blue-600 transition-colors">How It Works</Link>
-          <Link href="#" className="hover:text-blue-600 transition-colors">Use Cases</Link>
-          <Link href="#" className="hover:text-blue-600 transition-colors">Resources</Link>
+        <div className={`hidden md:flex items-center gap-8 text-sm font-medium ${scrolled || menuOpen ? "text-slate-600" : "text-white"}`}>
+          <Link href="#" className={`transition-colors ${scrolled || menuOpen ? "hover:text-blue-600" : "hover:text-white/80"}`}>Platform</Link>
+          <Link href="#" className={`transition-colors ${scrolled || menuOpen ? "hover:text-blue-600" : "hover:text-white/80"}`}>How It Works</Link>
+          <Link href="#" className={`transition-colors ${scrolled || menuOpen ? "hover:text-blue-600" : "hover:text-white/80"}`}>Use Cases</Link>
+          <Link href="#" className={`transition-colors ${scrolled || menuOpen ? "hover:text-blue-600" : "hover:text-white/80"}`}>Resources</Link>
         </div>
 
         {/* Desktop Buttons */}
         <div className="hidden md:flex items-center gap-4 text-sm font-medium">
-          <Link href="#" className="text-slate-600 hover:text-blue-600 px-4 py-2 border border-slate-200 rounded-md bg-white hover:bg-slate-50 transition-colors">
+          <Link href="#" className={`px-4 py-2 rounded-md transition-colors ${scrolled || menuOpen ? "text-slate-600 hover:text-blue-600 border border-slate-200 bg-white hover:bg-slate-50" : "text-white border border-white/40 bg-white/10 hover:bg-white/20"}`}>
             Sign In
           </Link>
           <button

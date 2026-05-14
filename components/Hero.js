@@ -52,6 +52,15 @@ export default function Hero() {
       video.addEventListener("loadedmetadata", initVideo, { once: true });
     }
 
+    // Prevent video from looping — pause at end
+    const onEnded = () => {
+      video.pause();
+      video.currentTime = video.duration;
+      targetRate = 0;
+      currentRate = 0;
+    };
+    video.addEventListener("ended", onEnded);
+
     // ── Reverse mode: requestVideoFrameCallback loop ──
     // rVFC fires exactly when browser is ready to paint next frame → no seek queue jam
     const LERP = 0.5;
@@ -237,6 +246,7 @@ export default function Hero() {
       clearTimeout(stopTimer);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("hero:reset", onHeroReset);
+      video.removeEventListener("ended", onEnded);
     };
   }, []);
 

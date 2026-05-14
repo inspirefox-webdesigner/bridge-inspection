@@ -197,11 +197,13 @@ export default function HowItWorksSection() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const video = videoRef.current;
+    
+  const video = videoRef.current;
     if (video) {
       video.play().catch(() => {});
       video.playbackRate = 0;
     }
+
 
     // scroll-speed video playback
     let targetRate = 0;
