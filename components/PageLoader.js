@@ -31,7 +31,7 @@ export default function PageLoader() {
       {/* Logo */}
       <div className="mb-8 flex items-center gap-3">
         <Image
-          src="/logo.svg"
+          src="./logo.svg"
           alt="StruxAI"
           width={160}
           height={48}
