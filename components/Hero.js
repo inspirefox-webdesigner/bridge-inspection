@@ -266,15 +266,23 @@ export default function Hero() {
           />
         </div>
 
-        {/* ── Hero image (shown after video ends) — hidden on mobile ── */}
+        {/* ── Hero image (desktop: hero-image.png, mobile: hero-mobile.png) ── */}
         <div
           ref={imageWrapRef}
-          className="absolute inset-0 origin-center bg-[#0a0f1e] hidden sm:block"
+          className="absolute inset-0 origin-center bg-[#0a0f1e]"
         >
+          {/* Desktop / tablet */}
           <img
             src="./hero-image.png"
             alt="Bridge Inspection"
-            className="w-full h-full"
+            className="hidden sm:block w-full h-full"
+            style={{ objectFit: "contain", objectPosition: "center center" }}
+          />
+          {/* Mobile */}
+          <img
+            src="./hero-mobile.png"
+            alt="Bridge Inspection"
+            className="sm:hidden w-full h-full"
             style={{ objectFit: "contain", objectPosition: "center center" }}
           />
         </div>

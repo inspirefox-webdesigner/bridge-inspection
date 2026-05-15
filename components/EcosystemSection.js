@@ -137,7 +137,7 @@ export default function EcosystemSection() {
   return (
     <div ref={outerRef} style={{ height: "450vh" }}>
       <div
-        className="relative w-full h-screen bg-[#F5F7FB] overflow-hidden flex flex-col items-center font-sans"
+        className="relative w-full lg:h-screen h-[110vh]  bg-[#F5F7FB] overflow-hidden flex flex-col items-center font-sans"
         style={{ position: "sticky", top: 0 }}
       >
         {/* Ambient video bg */}
@@ -259,7 +259,7 @@ export default function EcosystemSection() {
             </div>
 
             {/* ── Mobile (< md): heading + single column stack ── */}
-            <div className="md:hidden flex flex-col gap-3 w-full pb-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 120px)" }}>
+            <div className="md:hidden flex flex-col gap-3 w-full pb-4">
               {/* Mobile heading — shown above cards */}
               <div className="text-center pt-2 pb-2 shrink-0">
                 <p className="text-[11px] font-bold tracking-[0.22em] text-slate-400 uppercase mb-2">
