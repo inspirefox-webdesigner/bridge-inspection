@@ -269,7 +269,7 @@ export default function Hero() {
         {/* ── Hero image (shown after video ends) — hidden on mobile ── */}
         <div
           ref={imageWrapRef}
-          className="absolute inset-0 origin-center bg-[#0a0f1e] hidden md:block"
+          className="absolute inset-0 origin-center bg-[#0a0f1e] hidden sm:block"
         >
           <img
             src="./hero-image.png"

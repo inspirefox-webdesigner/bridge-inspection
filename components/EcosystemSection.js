@@ -147,8 +147,8 @@ export default function EcosystemSection() {
 
         <div className="relative z-10 w-full h-full flex flex-col px-4 md:px-6 max-w-7xl mx-auto">
 
-          {/* Heading */}
-          <div ref={headingRef} className="text-center pt-10 md:pt-16 shrink-0">
+          {/* Heading — desktop/tablet only */}
+          <div ref={headingRef} className="hidden md:block text-center pt-10 md:pt-16 shrink-0">
             <p className="text-[11px] font-bold tracking-[0.22em] text-slate-400 uppercase mb-3 md:mb-4">
               // Who It&apos;s For
             </p>
@@ -258,8 +258,17 @@ export default function EcosystemSection() {
               })}
             </div>
 
-            {/* ── Mobile (< md): single column stack ── */}
-            <div className="md:hidden flex flex-col gap-3 w-full pb-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 160px)" }}>
+            {/* ── Mobile (< md): heading + single column stack ── */}
+            <div className="md:hidden flex flex-col gap-3 w-full pb-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 120px)" }}>
+              {/* Mobile heading — shown above cards */}
+              <div className="text-center pt-2 pb-2 shrink-0">
+                <p className="text-[11px] font-bold tracking-[0.22em] text-slate-400 uppercase mb-2">
+                  // Who It&apos;s For
+                </p>
+                <h2 className="text-xl font-black text-slate-900 tracking-tight mb-3">
+                  Every role in the inspection chain.
+                </h2>
+              </div>
               {ROLES.map((role, i) => {
                 const isActive = displayIndex === i;
                 return (
