@@ -307,7 +307,7 @@ export default function Hero() {
           </p>
 
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
+          <div className="flex flex-col sm:flex-row items-center gap-5 mb-10">
             <button
               onClick={() => {
                 const el = document.getElementById("contact");
