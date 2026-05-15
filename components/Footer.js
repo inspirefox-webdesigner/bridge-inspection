@@ -254,21 +254,7 @@ export default function Footer() {
       />
 
       {/* Vertical grid lines */}
-      {[0, 1, 2, 3].map((i) => (
-        <div
-          key={i}
-          ref={(el) => {
-            if (el) gridLinesRef.current[i] = el;
-          }}
-          className="pointer-events-none absolute top-0 bottom-0"
-          style={{
-            left: `${20 + i * 20}%`,
-            width: "1px",
-            background:
-              "linear-gradient(180deg, transparent, rgba(30,94,220,0.12) 30%, rgba(30,94,220,0.12) 70%, transparent)",
-          }}
-        />
-      ))}
+     
 
       {/* Top border accent */}
       <div
@@ -279,9 +265,9 @@ export default function Footer() {
         }}
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-16 pb-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-16 pb-24 sm:pb-8">
         {/* Main grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-14">
           {/* Brand column */}
           <div className="md:col-span-1 flex flex-col gap-6">
             {/* Logo */}
@@ -395,13 +381,12 @@ export default function Footer() {
         {/* Bottom bar */}
         <div
           ref={bottomRef}
-          className="flex flex-col sm:flex-row items-center justify-between gap-4"
+          className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between"
         >
-          <p className="text-[11px] font-mono" style={{ color: "#334155" }}>
-            © 2026 STRUXAI, INC. · STRUXAI.AI · ALL RIGHTS RESERVED
+          <p className="text-[11px] font-mono text-center sm:text-left" style={{ color: "#334155" }}>
+            © 2026 STRUXAI, INC. · ALL RIGHTS RESERVED
           </p>
-
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             {BOTTOM_LINKS.map((link) => (
               <a
                 key={link.label}

@@ -28,7 +28,6 @@ const STEPS = [
     accentBorder: "#bfdbfe",
     ropeHeight: 90,
     swingFrom: -20,
-    cardStyle: { left: "3%", top: "10%" },
   },
   {
     num: "02",
@@ -50,9 +49,8 @@ const STEPS = [
     accent: "#6366f1",
     accentBg: "#eef2ff",
     accentBorder: "#c7d2fe",
-    ropeHeight: 160,
+    ropeHeight: 120,
     swingFrom: 22,
-    cardStyle: { left: "50%", top: "40%", transform: "translateX(-50%)" },
   },
   {
     num: "03",
@@ -76,8 +74,14 @@ const STEPS = [
     accentBorder: "#bae6fd",
     ropeHeight: 90,
     swingFrom: -18,
-    cardStyle: { right: "3%", top: "10%" },
   },
+];
+
+// Card positions for desktop (lg) and tablet (md)
+const CARD_POSITIONS = [
+  { lg: { left: "4%", top: "8%" },  md: { left: "2%",  top: "6%" } },
+  { lg: { left: "50%", top: "33%", transform: "translateX(-50%)" }, md: { left: "50%", top: "32%", transform: "translateX(-50%)" } },
+  { lg: { right: "4%", top: "8%" }, md: { right: "2%", top: "6%" } },
 ];
 
 function MobileStepCard({ step, index }) {
@@ -88,14 +92,11 @@ function MobileStepCard({ step, index }) {
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // Stagger delay based on index so each card feels sequential
           setTimeout(() => {
             setVisible(true);
-            // Animate progress bar after card appears
             if (barRef.current) {
               barRef.current.style.transition = "width 1.2s ease 0.4s";
               barRef.current.style.width = `${step.progress}%`;
@@ -106,7 +107,6 @@ function MobileStepCard({ step, index }) {
       },
       { threshold: 0.15 }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, [index, step.progress]);
@@ -124,7 +124,6 @@ function MobileStepCard({ step, index }) {
     >
       <div style={{ height: "3px", background: step.accent }} />
       <div className="p-5">
-        {/* Step header */}
         <div className="flex items-center gap-3 mb-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -139,23 +138,15 @@ function MobileStepCard({ step, index }) {
             <h3 className="text-sm font-bold text-gray-900 leading-snug">{step.title}</h3>
           </div>
         </div>
-
         <p className="text-[12px] text-gray-500 leading-relaxed mb-3">{step.desc}</p>
-
-        {/* Tags */}
         <div className="flex flex-wrap gap-1.5 mb-3">
           {step.tags.map((t) => (
-            <span
-              key={t}
-              className="text-[9px] font-mono px-2 py-0.5 rounded-md"
-              style={{ background: step.accentBg, border: `1px solid ${step.accentBorder}`, color: step.accent }}
-            >
+            <span key={t} className="text-[9px] font-mono px-2 py-0.5 rounded-md"
+              style={{ background: step.accentBg, border: `1px solid ${step.accentBorder}`, color: step.accent }}>
               {t}
             </span>
           ))}
         </div>
-
-        {/* Stats */}
         <div className="grid grid-cols-2 gap-2 mb-3">
           {step.stats.map((s, j) => (
             <div key={j} className="rounded-xl px-3 py-2" style={{ background: step.accentBg, border: `1px solid ${step.accentBorder}` }}>
@@ -166,14 +157,8 @@ function MobileStepCard({ step, index }) {
             </div>
           ))}
         </div>
-
-        {/* Progress bar */}
         <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-          <div
-            ref={barRef}
-            className="h-full rounded-full"
-            style={{ background: step.accent, width: "0%" }}
-          />
+          <div ref={barRef} className="h-full rounded-full" style={{ background: step.accent, width: "0%" }} />
         </div>
         <p className="text-[9px] font-mono mt-1 text-right" style={{ color: step.accent, opacity: 0.7 }}>
           {step.progressLabel}
@@ -197,15 +182,12 @@ export default function HowItWorksSection() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    
-  const video = videoRef.current;
+    const video = videoRef.current;
     if (video) {
       video.play().catch(() => {});
       video.playbackRate = 0;
     }
 
-
-    // scroll-speed video playback
     let targetRate = 0;
     let currentRate = 0;
     let lastScrollY = window.scrollY;
@@ -245,45 +227,33 @@ export default function HowItWorksSection() {
     const outer = outerRef.current;
     const base = { trigger: outer, start: "top top", end: "bottom bottom", scrub: 1 };
 
-    // Phase 1: heading — show immediately when section enters viewport
     gsap.set([labelRef.current, headingRef.current, subRef.current], { autoAlpha: 0, y: 35 });
     ScrollTrigger.create({
       trigger: outer,
       start: "top 90%",
       onEnter() {
         gsap.to([labelRef.current, headingRef.current, subRef.current], {
-          autoAlpha: 1, y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power3.out",
+          autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power3.out",
         });
       },
     });
-    // fade OUT when scrolled past
     gsap.fromTo(
       [labelRef.current, headingRef.current, subRef.current],
       { autoAlpha: 1, y: 0 },
-      {
-        autoAlpha: 0, y: -35,
-        ease: "power2.in",
-        scrollTrigger: { ...base, start: "8% top", end: "16% top" },
-      }
+      { autoAlpha: 0, y: -35, ease: "power2.in",
+        scrollTrigger: { ...base, start: "8% top", end: "16% top" } }
     );
 
-    // Phase 2: video fades in right after heading fades out
     gsap.set(videoWrapRef.current, { autoAlpha: 0, scale: 0.94 });
     gsap.to(videoWrapRef.current, {
       autoAlpha: 1, scale: 1,
       scrollTrigger: { ...base, start: "14% top", end: "22% top" },
     });
 
-    // Phase 3: cards drop with rope
     const cardStarts = [22, 40, 58];
-
     cardRefs.current.forEach((card, i) => {
       if (!card) return;
       const rope = ropeRefs.current[i];
-
       gsap.set(rope, { scaleY: 0, transformOrigin: "top center", autoAlpha: 0 });
       gsap.set(card, { autoAlpha: 0, y: -80, rotateZ: STEPS[i].swingFrom, transformOrigin: "top center" });
 
@@ -291,11 +261,10 @@ export default function HowItWorksSection() {
       const en = `${cardStarts[i] + 10}% top`;
 
       gsap.to(rope, { scaleY: 1, autoAlpha: 1, scrollTrigger: { ...base, start: st, end: en } });
-      gsap.to(card, { autoAlpha: 1, y: 0,      scrollTrigger: { ...base, start: st, end: en } });
+      gsap.to(card, { autoAlpha: 1, y: 0, scrollTrigger: { ...base, start: st, end: en } });
 
       ScrollTrigger.create({
-        trigger: outer,
-        start: st,
+        trigger: outer, start: st,
         onEnter() {
           gsap.fromTo(card,
             { rotateZ: STEPS[i].swingFrom },
@@ -316,9 +285,7 @@ export default function HowItWorksSection() {
       });
 
       ScrollTrigger.create({
-        trigger: outer,
-        start: st,
-        once: true,
+        trigger: outer, start: st, once: true,
         onEnter() {
           const bar = progRefs.current[i];
           if (bar) {
@@ -341,6 +308,7 @@ export default function HowItWorksSection() {
 
   return (
     <div id="how-it-works" ref={outerRef} style={{ height: "600vh" }}>
+      {/* ── Sticky desktop/tablet scene ── */}
       <div
         style={{ position: "sticky", top: 0 }}
         className="relative w-full h-screen overflow-hidden bg-[#f8fafc]"
@@ -356,25 +324,21 @@ export default function HowItWorksSection() {
         />
 
         {/* Phase 1 — Heading */}
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-start pt-20 px-6 pointer-events-none">
-          <p ref={labelRef} className="text-[11px] font-bold tracking-[0.22em] text-blue-500 uppercase font-mono mb-5">
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-start pt-16 md:pt-20 px-6 pointer-events-none">
+          <p ref={labelRef} className="text-[11px] font-bold tracking-[0.22em] text-blue-500 uppercase font-mono mb-4 md:mb-5">
             // How It Works
           </p>
-          <h2 ref={headingRef} className="text-4xl md:text-6xl font-black text-gray-900 leading-tight text-center mb-5 max-w-3xl">
+          <h2 ref={headingRef} className="text-3xl md:text-4xl lg:text-6xl font-black text-gray-900 leading-tight text-center mb-4 md:mb-5 max-w-3xl">
             From raw image to{" "}
             <span className="italic text-blue-600">SNBI-linked report.</span>
           </h2>
-          <p ref={subRef} className="text-lg md:text-2xl font-semibold text-gray-400 tracking-tight">
+          <p ref={subRef} className="text-base md:text-lg lg:text-2xl font-semibold text-gray-400 tracking-tight">
             Under 10 minutes.
           </p>
         </div>
 
         {/* Phase 2 — Video */}
-        <div
-          ref={videoWrapRef}
-          className="absolute inset-0 z-10"
-          style={{ perspective: "900px" }}
-        >
+        <div ref={videoWrapRef} className="absolute inset-0 z-10" style={{ perspective: "900px" }}>
           <video
             ref={videoRef}
             src="./b1-video.mp4"
@@ -385,19 +349,25 @@ export default function HowItWorksSection() {
               transform: "rotateX(4deg) scale(1.06)",
               transformOrigin: "center bottom",
             }}
-            muted
-            playsInline
-            preload="auto"
-            loop
+            muted playsInline preload="auto" loop
           />
         </div>
 
-        {/* Phase 3 — Hanging cards: desktop absolute, hidden on mobile */}
+        {/* Phase 3 — Hanging cards: desktop + tablet, hidden on mobile */}
         {STEPS.map((step, i) => (
           <div
             key={step.num}
             className="absolute z-30 hidden md:flex flex-col items-center pointer-events-none"
-            style={{ ...step.cardStyle, width: "clamp(200px, 26vw, 300px)" }}
+            style={{
+              // Responsive width: narrower on tablet, wider on desktop
+              width: "clamp(180px, 22vw, 280px)",
+              // Use lg positions for large screens, md positions for tablet
+              ...(typeof window !== "undefined" && window.innerWidth >= 1024
+                ? CARD_POSITIONS[i].lg
+                : CARD_POSITIONS[i].md),
+              // Fallback for SSR — use lg positions
+              ...CARD_POSITIONS[i].lg,
+            }}
           >
             {/* Rope */}
             <div
@@ -410,7 +380,6 @@ export default function HowItWorksSection() {
                 flexShrink: 0,
               }}
             />
-
             {/* Card */}
             <div
               ref={(el) => (cardRefs.current[i] = el)}
@@ -421,11 +390,10 @@ export default function HowItWorksSection() {
               }}
             >
               <div style={{ height: "3px", background: step.accent }} />
-
-              <div className="p-5">
-                <div className="flex items-center gap-3 mb-3">
+              <div className="p-4 lg:p-5">
+                <div className="flex items-center gap-2 lg:gap-3 mb-3">
                   <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                    className="w-8 h-8 lg:w-9 lg:h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ background: step.accentBg, border: `1px solid ${step.accentBorder}`, color: step.accent }}
                   >
                     {step.icon}
@@ -434,42 +402,29 @@ export default function HowItWorksSection() {
                     <p className="text-[9px] font-mono tracking-widest uppercase mb-0.5" style={{ color: step.accent }}>
                       Step {step.num}
                     </p>
-                    <h3 className="text-sm font-bold text-gray-900 leading-snug">{step.title}</h3>
+                    <h3 className="text-xs lg:text-sm font-bold text-gray-900 leading-snug">{step.title}</h3>
                   </div>
                 </div>
-
-                <p className="text-[11px] text-gray-500 leading-relaxed mb-3">{step.desc}</p>
-
-                <div className="flex flex-wrap gap-1.5 mb-3">
+                <p className="text-[10px] lg:text-[11px] text-gray-500 leading-relaxed mb-3">{step.desc}</p>
+                <div className="flex flex-wrap gap-1 lg:gap-1.5 mb-3">
                   {step.tags.map((t) => (
-                    <span
-                      key={t}
-                      className="text-[9px] font-mono px-2 py-0.5 rounded-md"
-                      style={{ background: step.accentBg, border: `1px solid ${step.accentBorder}`, color: step.accent }}
-                    >
+                    <span key={t} className="text-[8px] lg:text-[9px] font-mono px-1.5 lg:px-2 py-0.5 rounded-md"
+                      style={{ background: step.accentBg, border: `1px solid ${step.accentBorder}`, color: step.accent }}>
                       {t}
                     </span>
                   ))}
                 </div>
-
-                <div className="grid grid-cols-2 gap-2 mb-3">
+                <div className="grid grid-cols-2 gap-1.5 lg:gap-2 mb-3">
                   {step.stats.map((s, j) => (
-                    <div
-                      key={j}
-                      className="rounded-xl px-3 py-2"
-                      style={{ background: step.accentBg, border: `1px solid ${step.accentBorder}` }}
-                    >
-                      <p className="text-base font-black font-mono" style={{ color: step.accent }}>
-                        <span className="text-xs font-bold opacity-70">{s.prefix}</span>
-                        {s.value}
+                    <div key={j} className="rounded-xl px-2 lg:px-3 py-1.5 lg:py-2"
+                      style={{ background: step.accentBg, border: `1px solid ${step.accentBorder}` }}>
+                      <p className="text-sm lg:text-base font-black font-mono" style={{ color: step.accent }}>
+                        <span className="text-[10px] lg:text-xs font-bold opacity-70">{s.prefix}</span>{s.value}
                       </p>
-                      <p className="text-[9px] font-mono uppercase tracking-wide" style={{ color: step.accent, opacity: 0.7 }}>
-                        {s.label}
-                      </p>
+                      <p className="text-[8px] lg:text-[9px] font-mono uppercase tracking-wide" style={{ color: step.accent, opacity: 0.7 }}>{s.label}</p>
                     </div>
                   ))}
                 </div>
-
                 <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
                   <div
                     ref={(el) => (progRefs.current[i] = el)}
@@ -486,11 +441,18 @@ export default function HowItWorksSection() {
         ))}
       </div>
 
-      {/* Mobile Steps — one-by-one scroll reveal */}
-      <div className="md:hidden bg-[#f8fafc] px-6 py-16 flex flex-col gap-8">
-        <p className="text-[11px] font-bold tracking-[0.22em] text-blue-500 uppercase font-mono text-center">
-          // How It Works
-        </p>
+      {/* ── Mobile Steps — completely separate, below sticky ── */}
+      <div className="md:hidden bg-[#f8fafc] px-4 pt-12 pb-16 flex flex-col gap-6">
+        <div className="text-center mb-2">
+          <p className="text-[11px] font-bold tracking-[0.22em] text-blue-500 uppercase font-mono mb-3">
+            // How It Works
+          </p>
+          <h2 className="text-2xl font-black text-gray-900 leading-tight mb-2">
+            From raw image to{" "}
+            <span className="italic text-blue-600">SNBI-linked report.</span>
+          </h2>
+          <p className="text-base font-semibold text-gray-400">Under 10 minutes.</p>
+        </div>
         {STEPS.map((step, i) => (
           <MobileStepCard key={step.num} step={step} index={i} />
         ))}

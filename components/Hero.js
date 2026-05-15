@@ -9,25 +9,26 @@ export default function Hero() {
   const videoWrapRef = useRef(null);
   const videoRef = useRef(null);
   const contentRef = useRef(null);
+  const imageWrapRef = useRef(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const video = videoRef.current;
 
-    // Hide content initially — ensure video is visible from the start
+    // Hide content and image initially — video visible from start
     gsap.set(contentRef.current, { autoAlpha: 0, y: 50 });
+    gsap.set(imageWrapRef.current, { autoAlpha: 0 });
     gsap.set(videoWrapRef.current, { autoAlpha: 1, scale: 1, borderRadius: "0px" });
 
-    // ── Hybrid: forward = play/playbackRate (smooth), reverse = rVFC seek ──
-    const SCROLL_ZONE = window.innerHeight * 3.5;
+    const isMobile = window.innerWidth < 768;
+    const SCROLL_ZONE = window.innerHeight * (isMobile ? 2 : 3.5);
 
     let videoDuration = 0;
     let lastScrollY = window.scrollY;
-    let direction = 1; // 1 = forward, -1 = reverse
+    let direction = 1;
     let rafId;
 
-    // Reverse scrub state
     let targetTime = 0;
     let displayTime = 0;
     let rVFCHandle = null;
@@ -52,7 +53,6 @@ export default function Hero() {
       video.addEventListener("loadedmetadata", initVideo, { once: true });
     }
 
-    // Prevent video from looping — pause at end
     const onEnded = () => {
       video.pause();
       video.currentTime = video.duration;
@@ -61,11 +61,9 @@ export default function Hero() {
     };
     video.addEventListener("ended", onEnded);
 
-    // ── Reverse mode: requestVideoFrameCallback loop ──
-    // rVFC fires exactly when browser is ready to paint next frame → no seek queue jam
     const LERP = 0.5;
     const reverseLoop = () => {
-      if (direction !== -1) return; // stop if direction changed
+      if (direction !== -1) return;
       const diff = targetTime - displayTime;
       displayTime =
         Math.abs(diff) < 0.001 ? targetTime : displayTime + diff * LERP;
@@ -87,12 +85,11 @@ export default function Hero() {
       }
     };
 
-    // ── Forward mode: velocity → playbackRate ──
     let targetRate = 0;
     let currentRate = 0;
     let stopTimer = null;
     const MAX_RATE = 1.5;
-    const MIN_RATE = 0.1; // browser minimum is ~0.0625; stay safely above it
+    const MIN_RATE = 0.1;
 
     const forwardTick = () => {
       if (direction !== 1) {
@@ -104,7 +101,6 @@ export default function Hero() {
         currentRate = 0;
         if (!video.paused) video.pause();
       } else {
-        // Clamp to browser-supported range [0.1, 16] before setting
         const rate = Math.max(0.1, Math.min(16, currentRate));
         if (video.paused) video.play().catch(() => {});
         video.playbackRate = rate;
@@ -113,7 +109,6 @@ export default function Hero() {
     };
 
     const fullReset = () => {
-      // Stop everything and reset to initial state (scroll position = 0)
       stopReverse();
       if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
       clearTimeout(stopTimer);
@@ -125,10 +120,9 @@ export default function Hero() {
       currentRate = 0;
       direction = 1;
       lastScrollY = 0;
-      // Reset GSAP states
       gsap.set(videoWrapRef.current, { scale: 1, autoAlpha: 1, borderRadius: "0px" });
+      gsap.set(imageWrapRef.current, { autoAlpha: 0, y: 0 });
       gsap.set(contentRef.current, { autoAlpha: 0, y: 50 });
-      // Restart forward tick
       rafId = requestAnimationFrame(forwardTick);
     };
 
@@ -140,14 +134,11 @@ export default function Hero() {
       lastScrollY = currentScrollY;
       if (dy === 0) return;
 
-      // Detect instant scroll-to-top jump (e.g. from ScrollToTop button)
       if (currentScrollY === 0 && Math.abs(dy) > window.innerHeight) {
         fullReset();
         return;
       }
 
-      // Sync displayTime with actual video position to avoid jumps after
-      // returning to the hero section from far below
       const syncedTime = video.currentTime;
       if (Math.abs(syncedTime - displayTime) > 0.5) {
         displayTime = syncedTime;
@@ -160,14 +151,12 @@ export default function Hero() {
         direction = newDir;
 
         if (direction === 1) {
-          // Switch to forward: stop reverse loop, start play
           stopReverse();
           displayTime = video.currentTime;
           targetRate = 0;
           currentRate = 0;
           if (!rafId) rafId = requestAnimationFrame(forwardTick);
         } else {
-          // Switch to reverse: stop forward play, start rVFC loop
           video.pause();
           if (rafId) {
             cancelAnimationFrame(rafId);
@@ -180,7 +169,6 @@ export default function Hero() {
       }
 
       if (direction === 1) {
-        // Update forward velocity
         const velocity = Math.abs(dy) / 16;
         targetRate = Math.min(velocity * 4, MAX_RATE);
         clearTimeout(stopTimer);
@@ -188,21 +176,20 @@ export default function Hero() {
           targetRate = 0;
         }, 150);
       } else {
-        // Update reverse target
         targetTime = getScrollProgress() * videoDuration;
       }
     };
 
-    // Listen for instant scroll-to-top from ScrollToTop button
     const onHeroReset = () => fullReset();
     window.addEventListener("hero:reset", onHeroReset);
 
-    // Start in forward mode
     rafId = requestAnimationFrame(forwardTick);
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    // ── Phase 2 (70% → 100%): video shrinks + content reveals ──
-    // scrub:true so reverse scroll fully reverses the animation
+    // ── Phase 1 (0% → 70%): video plays via scroll ──
+
+    // ── Phase 2 (70% → 100%): video fades → image briefly shows → content reveals ──
+    // Same as original but image sits between video and content
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: outerRef.current,
@@ -210,7 +197,6 @@ export default function Hero() {
         end: "bottom bottom",
         scrub: 1,
         onLeaveBack: () => {
-          // Re-entering hero from below — reset video to playing state
           stopReverse();
           displayTime = video.currentTime;
           targetRate = 0;
@@ -222,21 +208,29 @@ export default function Hero() {
       },
     });
 
+    // video shrinks out (0 → 0.5)
     tl.to(
       videoWrapRef.current,
-      {
-        scale: 0.75,
-        autoAlpha: 0,
-        borderRadius: "24px",
-        duration: 1,
-        ease: "power2.inOut",
-      },
+      { scale: 0.75, autoAlpha: 0, borderRadius: "24px", duration: 0.5, ease: "power2.inOut" },
       0,
     );
+    // image fades in (0.3 → 0.7)
+    tl.to(
+      imageWrapRef.current,
+      { autoAlpha: 1, duration: 0.4, ease: "power2.out" },
+      0.3,
+    );
+    // image fades out (0.6 → 1)
+    tl.to(
+      imageWrapRef.current,
+      { autoAlpha: 0, duration: 0.4, ease: "power2.in" },
+      0.6,
+    );
+    // content reveals (0.6 → 1)
     tl.to(
       contentRef.current,
-      { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" },
-      0.3,
+      { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" },
+      0.6,
     );
 
     return () => {
@@ -251,12 +245,12 @@ export default function Hero() {
   }, []);
 
   return (
-    <div ref={outerRef} style={{ height: "500vh" }}>
+    <div ref={outerRef} className="h-[300vh] md:h-[500vh]">
       <div
         style={{ position: "sticky", top: 0 }}
         className="w-full h-screen bg-[#0a0f1e] overflow-hidden"
       >
-        {/* ── Full-screen video — starts slightly zoomed in ── */}
+        {/* ── Full-screen video ── */}
         <div ref={videoWrapRef} className="absolute inset-0 origin-center">
           <video
             ref={videoRef}
@@ -272,11 +266,23 @@ export default function Hero() {
           />
         </div>
 
-        {/* ── Hero content (revealed after video) ── */}
+        {/* ── Hero image (shown after video ends) — hidden on mobile ── */}
+        <div
+          ref={imageWrapRef}
+          className="absolute inset-0 origin-center bg-[#0a0f1e] hidden md:block"
+        >
+          <img
+            src="./hero-image.png"
+            alt="Bridge Inspection"
+            className="w-full h-full"
+            style={{ objectFit: "contain", objectPosition: "center center" }}
+          />
+        </div>
+
+        {/* ── Hero content (revealed after image) ── */}
         <div
           ref={contentRef}
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10 bg-[#f8fafc]"
-          style={{ visibility: "hidden" }}
         >
           {/* Badge */}
           <div className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-xs font-semibold tracking-wider text-[#1e5edc] text-center max-w-xs sm:max-w-none">

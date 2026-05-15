@@ -143,33 +143,35 @@ export default function FeaturesSection() {
   }, []);
 
   return (
+    <>
     <div ref={outerRef} className="md:h-[400vh]">
+      {/* Desktop/tablet sticky scene — hidden on mobile */}
       <div
         ref={stickyRef}
         id="next-section"
         style={{ position: "sticky", top: 0 }}
-        className="relative w-full md:h-screen bg-[#f8fafc] text-[#0f172a] flex flex-col justify-center"
+        className="relative w-full md:h-screen bg-[#f8fafc] text-[#0f172a] hidden md:flex flex-col justify-center overflow-hidden"
       >
         {/* Grid bg */}
         <div className="absolute inset-0 grid-bg pointer-events-none opacity-60" />
 
-        {/* Heading */}
-        <div ref={headingRef} className="absolute top-12 left-0 right-0 text-center z-30 pointer-events-none px-6">
+        {/* Heading — desktop/tablet only (absolute positioned) */}
+        <div ref={headingRef} className="hidden md:block absolute top-10 left-0 right-0 text-center z-30 pointer-events-none px-6">
           <span className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-3 block">
             // Industry Firsts
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold font-serif leading-tight text-[#0f172a]">
+          <h2 className="text-4xl lg:text-5xl font-bold font-serif leading-tight text-[#0f172a]">
             Three capabilities no one else offers.
           </h2>
-          <p className="mt-3 mb-5 text-slate-500 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          <p className="mt-3 mb-5 text-slate-500 text-sm lg:text-base max-w-xl mx-auto leading-relaxed">
             StruxAI didn&apos;t build incremental improvements to the status quo. We rebuilt inspection infrastructure from first principles.
           </p>
         </div>
 
         {/* Interactive Timeline Container — Desktop only */}
-        <div className="hidden md:flex w-full h-[700px] mt-48 md:mt-80 items-center justify-center pointer-events-none">
+        <div className="hidden md:flex w-full h-[700px] mt-48 md:mt-72 lg:mt-80 items-center justify-center pointer-events-none">
           {/* Scalable Container for responsiveness */}
-          <div className="relative w-[1200px] h-[600px] flex-shrink-0 origin-center transform scale-[0.35] sm:scale-50 md:scale-75 lg:scale-100 transition-transform duration-300">
+          <div className="relative w-[1200px] h-[600px] flex-shrink-0 origin-center transform scale-[0.45] md:scale-[0.6] lg:scale-75 xl:scale-100 transition-transform duration-300">
             
             {/* Background Faint Bridge */}
             <div className="absolute inset-0 opacity-15">
@@ -279,74 +281,91 @@ export default function FeaturesSection() {
           </div>
         </div>
 
-        {/* Mobile Cards — stacked layout */}
-        <div className="md:hidden px-0 pb-16 mt-8 flex flex-col gap-6">
-          {/* Card 1 */}
-          <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-lg">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center border border-blue-100">
-                <Link2 size={15} className="text-[#1e5edc]" />
-              </div>
-              <span className="text-[9px] font-bold tracking-widest text-slate-400 uppercase bg-slate-100 px-2 py-1 rounded border border-slate-200">Industry First</span>
-            </div>
-            <h3 className="text-lg font-bold text-[#0f172a] mb-2">SNBI Element-Level Connection</h3>
-            <p className="text-slate-500 text-sm leading-relaxed">
-              Every defect StruxAI detects is automatically mapped to its SNBI element — deck, superstructure, substructure, or culvert component — with correct element numbers, condition states, and quantities pre-populated.
-            </p>
-            <div className="mt-4 pt-3 border-t border-slate-100">
-              <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Auto-Linked Elements</p>
-              <div className="flex flex-wrap gap-1.5">
-                {["#120 Concrete Deck", "#205 Concrete Column", "#803 Bearing Device"].map((tag) => (
-                  <span key={tag} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">{tag}</span>
-                ))}
-              </div>
-            </div>
+      </div>
+    </div>
+
+    {/* ── Mobile Cards — outside sticky, normal document flow ── */}
+    <div className="md:hidden bg-[#f8fafc] px-4 pt-10 pb-16 flex flex-col gap-6">
+      {/* Mobile heading */}
+      <div className="text-center mb-2">
+        <span className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-3 block">
+          // Industry Firsts
+        </span>
+        <h2 className="text-2xl font-bold font-serif leading-tight text-[#0f172a] mb-2">
+          Three capabilities no one else offers.
+        </h2>
+        <p className="text-slate-500 text-sm leading-relaxed max-w-sm mx-auto">
+          StruxAI didn&apos;t build incremental improvements to the status quo. We rebuilt inspection infrastructure from first principles.
+        </p>
+      </div>
+
+      {/* Card 1 */}
+      <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-lg">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center border border-blue-100">
+            <Link2 size={15} className="text-[#1e5edc]" />
           </div>
-          {/* Card 2 */}
-          <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-lg">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center border border-orange-100">
-                <Layers size={15} className="text-[#f97316]" />
-              </div>
-              <span className="text-[9px] font-bold tracking-widest text-[#f97316] uppercase bg-orange-50 px-2 py-1 rounded border border-orange-100">Only in StruxAI</span>
-            </div>
-            <h3 className="text-lg font-bold text-[#0f172a] mb-2">Revit BIM Integration</h3>
-            <p className="text-slate-500 text-sm leading-relaxed">
-              Upload your bridge&apos;s Revit model directly into StruxAI. Inspection photos are automatically geolocated and attached to their corresponding BIM element — creating a living digital twin.
-            </p>
-            <div className="mt-4 pt-3 border-t border-slate-100">
-              <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Supported Formats</p>
-              <div className="flex flex-wrap gap-1.5">
-                {[".RVT", ".IFC", ".NWD", ".FBX"].map((tag) => (
-                  <span key={tag} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">{tag}</span>
-                ))}
-              </div>
-            </div>
+          <span className="text-[9px] font-bold tracking-widest text-slate-400 uppercase bg-slate-100 px-2 py-1 rounded border border-slate-200">Industry First</span>
+        </div>
+        <h3 className="text-base font-bold text-[#0f172a] mb-2">SNBI Element-Level Connection</h3>
+        <p className="text-slate-500 text-sm leading-relaxed">
+          Every defect StruxAI detects is automatically mapped to its SNBI element — deck, superstructure, substructure, or culvert component — with correct element numbers, condition states, and quantities pre-populated.
+        </p>
+        <div className="mt-4 pt-3 border-t border-slate-100">
+          <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Auto-Linked Elements</p>
+          <div className="flex flex-wrap gap-1.5">
+            {["#120 Concrete Deck", "#205 Concrete Column", "#803 Bearing Device"].map((tag) => (
+              <span key={tag} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">{tag}</span>
+            ))}
           </div>
-          {/* Card 3 */}
-          <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-lg">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center border border-blue-100">
-                <Activity size={15} className="text-[#1e5edc]" />
-              </div>
-              <span className="text-[9px] font-bold tracking-widest text-[#1e5edc] uppercase bg-blue-50 px-2 py-1 rounded border border-blue-100">Only in StruxAI</span>
-            </div>
-            <h3 className="text-lg font-bold text-[#0f172a] mb-2">Predictive Maintenance Engine</h3>
-            <p className="text-slate-500 text-sm leading-relaxed">
-              No other inspection platform forecasts what comes next. StruxAI&apos;s predictive engine analyzes inspection history, traffic loading data, and material age to model deterioration curves.
-            </p>
-            <div className="mt-4 pt-3 border-t border-slate-100">
-              <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">AI Forecast Outputs</p>
-              <div className="flex flex-wrap gap-1.5">
-                {["Condition ratings", "Maintenance triggers", "Cost estimates"].map((tag) => (
-                  <span key={tag} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">{tag}</span>
-                ))}
-              </div>
-            </div>
+        </div>
+      </div>
+
+      {/* Card 2 */}
+      <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-lg">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center border border-orange-100">
+            <Layers size={15} className="text-[#f97316]" />
+          </div>
+          <span className="text-[9px] font-bold tracking-widest text-[#f97316] uppercase bg-orange-50 px-2 py-1 rounded border border-orange-100">Only in StruxAI</span>
+        </div>
+        <h3 className="text-base font-bold text-[#0f172a] mb-2">Revit BIM Integration</h3>
+        <p className="text-slate-500 text-sm leading-relaxed">
+          Upload your bridge&apos;s Revit model directly into StruxAI. Inspection photos are automatically geolocated and attached to their corresponding BIM element — creating a living digital twin.
+        </p>
+        <div className="mt-4 pt-3 border-t border-slate-100">
+          <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Supported Formats</p>
+          <div className="flex flex-wrap gap-1.5">
+            {[".RVT", ".IFC", ".NWD", ".FBX"].map((tag) => (
+              <span key={tag} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">{tag}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Card 3 */}
+      <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-lg">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center border border-blue-100">
+            <Activity size={15} className="text-[#1e5edc]" />
+          </div>
+          <span className="text-[9px] font-bold tracking-widest text-[#1e5edc] uppercase bg-blue-50 px-2 py-1 rounded border border-blue-100">Only in StruxAI</span>
+        </div>
+        <h3 className="text-base font-bold text-[#0f172a] mb-2">Predictive Maintenance Engine</h3>
+        <p className="text-slate-500 text-sm leading-relaxed">
+          No other inspection platform forecasts what comes next. StruxAI&apos;s predictive engine analyzes inspection history, traffic loading data, and material age to model deterioration curves.
+        </p>
+        <div className="mt-4 pt-3 border-t border-slate-100">
+          <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">AI Forecast Outputs</p>
+          <div className="flex flex-wrap gap-1.5">
+            {["Condition ratings", "Maintenance triggers", "Cost estimates"].map((tag) => (
+              <span key={tag} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">{tag}</span>
+            ))}
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 }
 
